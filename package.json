@@ -1,5 +1,5 @@
 {
-  "name": "@yourname/zhihu-cli",
+  "name": "zhihu-cli",
   "version": "1.0.0",
   "description": "知乎 CLI - 搜索、阅读知乎内容",
   "main": "./dist/index.js",
@@ -8,13 +8,11 @@
   },
   "files": [
     "dist/",
-    "SKILL.md",
     "LICENSE",
     "README.md"
   ],
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch",
     "prepublishOnly": "npm run build"
   },
   "engines": {
