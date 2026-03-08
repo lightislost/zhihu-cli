@@ -76,6 +76,54 @@ document.execCommand('insertText', false, '你的内容');
 `);
 }
 
+// Browser Relay 点赞说明
+function voteAction(url: string): void {
+  console.log(`
+👍 Browser Relay 点赞功能
+=============================
+
+API 方式点赞已被知乎限制，请使用 Browser Relay 方式：
+
+1. 用浏览器打开答案页面：
+   ${url}
+
+2. 在 OpenClaw 中执行以下 JavaScript 点击赞同按钮：
+
+// 查找并点击赞同按钮
+const btn = document.querySelector('button[class*="VoteButton"]') || 
+            Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('赞同'));
+if (btn) { btn.click(); console.log('已点赞!'); } 
+else { console.log('未找到赞同按钮，请确保页面已加载'); }
+
+// 或者更精确的方式 - 点击第一个回答的赞同按钮
+const voteBtns = document.querySelectorAll('.VoteButton');
+if (voteBtns.length > 0) { voteBtns[0].click(); }
+
+注意：需要在知乎页面打开答案后才能使用
+`);
+}
+
+// 用户信息功能
+async function userAction(token: string): Promise<void> {
+  console.log(`[INFO] Getting user info: ${token}`);
+  const cookie = loadCookies();
+  if (!cookie) { console.log('[ERROR] No cookie'); return; }
+  
+  try {
+    const response = await axios.get(`https://www.zhihu.com/api/v4/members/${token}`, {
+      headers: getHeaders(cookie)
+    });
+    const u = response.data;
+    console.log(`\n[OK] ${u.name}`);
+    if (u.headline) console.log(`   ${u.headline}`);
+    console.log(`   URL: https://www.zhihu.com/people/${u.url_token}`);
+    console.log(`   Followers: ${u.follower_count || 0}`);
+    console.log(`   Following: ${u.following_count || 0}`);
+    console.log(`   Votes: ${u.voteup_count || 0}`);
+    console.log(`   Thanks: ${u.thanked_count || 0}`);
+  } catch (error: any) { handleApiError(error, 'User info'); }
+}
+
 async function whoami(): Promise<void> {
   console.log('[INFO] Checking login status...');
   const cookie = loadCookies();
@@ -216,7 +264,9 @@ async function loginAction(): Promise<void> {
 program.name('zhihu').description('Zhihu CLI - Search & Read').version('1.0.0');
 
 program.command('post').description('Browser Relay post instructions').action(postAction);
+program.command('vote <url>').description('Browser Relay vote instructions').action(voteAction);
 program.command('whoami').description('Check login status').action(whoami);
+program.command('user <token>').description('Get user info by url_token').action(userAction);
 program.command('login').description('Auto-extract cookie from Chrome').action(loginAction);
 program.command('set-cookie <cookie>').description('Set cookie manually').action(setCookieAction);
 program.command('hot').description('Get hot topics').action(hot);
