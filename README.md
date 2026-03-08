@@ -10,18 +10,11 @@
 - 💬 获取评论
 - 👤 查看用户信息
 - 👍 点赞/取消点赞
-- 🔖 收藏管理
 
 ## 安装
 
 ```bash
 npm install -g zhihu-cli
-```
-
-或通过 ClawHub（OpenClaw 生态）：
-
-```bash
-clawhub install zhihu
 ```
 
 需要 Node.js >= 18。
@@ -32,62 +25,79 @@ clawhub install zhihu
 2. 设置 Cookie（见下方）
 3. 开始使用！
 
-## Cookie 设置
+## 两种认证方式
 
-### 方式一：命令行输入
+### 方式一：Cookie 认证
+
+适合命令行使用，快速便捷：
 
 ```bash
+# 自动提取（需要当前用户登录过 Chrome）
+zhihu login
+
+# 手动设置
 zhihu set-cookie "z_c0=xxx;d_c0=xxx;..."
 ```
 
-### 方式二：配置文件
+⚠️ **自动提取限制**：需要用当前系统用户登录过 Chrome，否则会报错 "Unable to get key for cookie decryption"。手动复制 Cookie 仍然可用。
 
-获取 Cookie：
+### 方式二：Browser Relay（发帖功能）
+
+适合自动化发帖，无需手动复制 Cookie：
+
+1. 安装 OpenClaw 扩展
+2. 在知乎页面点击扩展图标连接
+3. 直接通过语音/文字让 AI 帮你发帖
+
+**Browser Relay 发帖实现**：
+```javascript
+// 关键：使用 execCommand 触发 Draft.js 输入事件
+const el = document.querySelector('[contenteditable="true"]');
+el.focus();
+document.execCommand('insertText', false, '你的内容');
+```
+
+## Cookie 配置文件路径
+
+**重要**：手动存放 Cookie 时，请存放到以下路径：
+
+| 系统 | 路径 |
+|------|------|
+| Windows | `C:\Users\<用户名>\.openclaw\.zhihu-cookies` |
+| Linux/Mac | `~/.openclaw/.zhihu-cookies` |
+
+获取方式：
 1. 浏览器登录知乎
 2. F12 → Application → Cookies → zhihu.com
 3. 复制 `z_c0` 的 Value
-
-写入配置文件：
-- Windows: `%USERPROFILE%\.zhihu-cookies`
-- Linux/Mac: `~/.zhihu-cookies`
 
 ## 命令
 
 | 命令 | 说明 |
 |------|------|
+| `zhihu login` | 自动从 Chrome 提取 Cookie |
 | `zhihu whoami` | 检查登录状态 |
+| `zhihu set-cookie <cookie>` | 手动设置 Cookie |
 | `zhihu hot` | 获取热榜 |
 | `zhihu search <关键词>` | 搜索内容 |
 | `zhihu topics <关键词>` | 搜索话题 |
 | `zhihu read <链接>` | 读取回答/文章 |
-| `zhihu comments <链接>` | 获取评论 |
 | `zhihu user <token>` | 查看用户 |
 | `zhihu vote <链接>` | 点赞 |
 | `zhihu unvote <链接>` | 取消点赞 |
 
-## 选项
+## 认证方式对比
 
-### search
-- `-s, --sort <type>` - 排序方式 (general/popular/latest)
+| 方式 | 优点 | 缺点 |
+|------|------|------|
+| Cookie | 快速、命令行可用 | 需手动复制 |
+| Browser Relay | 无需手动复制、可视化 | 需保持浏览器在线 |
 
-### comments
-- `-l, --limit <number>` - 评论数量
+## 依赖
 
-## AI 助手使用
-
-把这段话发给 AI 助手：
-
-> "帮我用 npm 安装 zhihu-cli 这个知乎 CLI 工具，然后运行 zhihu hot 看看热榜。"
-
-## 与 AI Agent 集成
-
-可以作为库导入使用：
-
-```javascript
-import { search, hot, read } from 'zhihu-cli';
-
-const results = await search('关键词');
-```
+- Node.js >= 18
+- browser-cookie3 (自动提取 Cookie)
+- OpenClaw（Browser Relay 方式）
 
 ## License
 
