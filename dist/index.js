@@ -159,6 +159,32 @@ async function userAction(token) {
         handleApiError(error, 'User info');
     }
 }
+// Browser Relay 关注用户说明
+function followAction(url) {
+    console.log(`
+👤 Browser Relay 关注用户功能
+=============================
+
+API 方式关注已被知乎限制，请使用 Browser Relay 方式：
+
+1. 用浏览器打开用户主页或首页推荐：
+   ${url || 'https://www.zhihu.com/'}
+
+2. 在 OpenClaw 中执行以下 JavaScript 点击关注按钮：
+
+// 查找并点击关注按钮（首页推荐区域）
+const followBtns = document.querySelectorAll('button');
+const btn = Array.from(followBtns).find(b => b.textContent?.includes('关注') && !b.textContent?.includes('取消'));
+if (btn) { btn.click(); console.log('已关注!'); }
+
+// 或者在用户主页关注
+const userPageBtn = document.querySelector('.Button.FollowButton') || 
+                    document.querySelector('[class*="FollowButton"]');
+if (userPageBtn) { userPageBtn.click(); }
+
+注意：需要在知乎页面打开后才能使用
+`);
+}
 async function whoami() {
     console.log('[INFO] Checking login status...');
     const cookie = loadCookies();
@@ -322,6 +348,7 @@ async function loginAction() {
 program.name('zhihu').description('Zhihu CLI - Search & Read').version('1.0.0');
 program.command('post').description('Browser Relay post instructions').action(postAction);
 program.command('vote <url>').description('Browser Relay vote instructions').action(voteAction);
+program.command('follow [url]').description('Browser Relay follow instructions').action(followAction);
 program.command('whoami').description('Check login status').action(whoami);
 program.command('user <token>').description('Get user info by url_token').action(userAction);
 program.command('login').description('Auto-extract cookie from Chrome').action(loginAction);
