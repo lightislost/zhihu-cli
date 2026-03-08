@@ -7,9 +7,8 @@
 - 🔍 搜索知乎内容
 - 🔥 获取热榜
 - 📖 读取回答/文章
-- 💬 获取评论
-- 👤 查看用户信息
-- 👍 点赞/取消点赞
+- 👤 查看用户信息（通过搜索结果）
+- 🔐 自动从 Chrome 提取 Cookie
 
 ## 安装
 
@@ -82,9 +81,7 @@ document.execCommand('insertText', false, '你的内容');
 | `zhihu search <关键词>` | 搜索内容 |
 | `zhihu topics <关键词>` | 搜索话题 |
 | `zhihu read <链接>` | 读取回答/文章 |
-| `zhihu user <token>` | 查看用户 |
-| `zhihu vote <链接>` | 点赞 |
-| `zhihu unvote <链接>` | 取消点赞 |
+| `zhihu post` | 查看 Browser Relay 发帖说明 |
 
 ## 认证方式对比
 
