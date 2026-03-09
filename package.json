@@ -1,5 +1,5 @@
 {
-  "name": "zhihu-cli",
+  "name": "@wangehengyi/zhihu-cli",
   "version": "1.0.0",
   "description": "知乎 CLI - 搜索、阅读知乎内容",
   "main": "./dist/index.js",
